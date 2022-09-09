@@ -81,14 +81,14 @@ inline long interpret(long idx) {
 			if (!skipTillClose) memory[addr]--;
 			return ++idx;
 		case '>':
-			if (skipTillClose == 0) addr++;
+			if (!skipTillClose) addr++;
 			if (addr >= MEMORY_SIZE) {
 				printf("Memory size exceeded. (%d)\n", addr);
 				exit(5);
 			}
 			return ++idx;
 		case '<':
-			if (skipTillClose == 0) addr--;
+			if (!skipTillClose) addr--;
 			if (addr < 0) {
 				printf("Memory size exceeded. (%d)\n", addr);
 				exit(5);
