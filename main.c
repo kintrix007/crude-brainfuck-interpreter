@@ -12,7 +12,7 @@ struct Node {
 };
 
 unsigned char *memory;
-struct Node* head;
+struct Node *head;
 char *buffer;
 long addr;
 int skipTillClose;
