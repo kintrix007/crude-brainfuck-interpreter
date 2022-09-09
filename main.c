@@ -83,16 +83,24 @@ inline long interpret(long idx) {
 		case '>':
 			if (skipTillClose == 0) addr++;
 			if (addr >= MEMORY_SIZE) {
-				printf("Memory size exceeded.\n");
+				printf("Memory size exceeded. (%d)\n", addr);
 				exit(5);
 			}
 			return ++idx;
 		case '<':
 			if (skipTillClose == 0) addr--;
-			if (addr < 0) addr = 0;
+			if (addr < 0) {
+				printf("Memory size exceeded. (%d)\n", addr);
+				exit(5);
+			}
 			return ++idx;
 		case '[':
 			if (skipTillClose > 0 || memory[addr] == 0) {
+				if (head != NULL && head->data == idx) {
+					struct Node *node = head->next;
+					free(head);
+					head = node;
+				}
 				skipTillClose++;
 				return ++idx;
 			} else {
@@ -119,8 +127,7 @@ inline long interpret(long idx) {
 						exit(10);
 					}
 					idx = head->data;
-					head = head->next;
-					return idx;
+					return ++idx;
 				} else {
 					return ++idx;
 				}
