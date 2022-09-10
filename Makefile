@@ -1,7 +1,7 @@
 app=bf
 
 $(app): main.c
-	gcc -o $(app) main.c && strip $(app)
+	gcc -O2 -o $(app) main.c && strip $(app)
 
 clean:
 	rm ./$(app)
