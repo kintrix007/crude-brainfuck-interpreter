@@ -1,3 +1,3 @@
 # Crude Brainfuck Interpreter
 
-Currently it is known to be implemented incorrectly. The fibonacci.bf example crashes midway, even though it's valid brainfuck and should work.
+To compile the binary just type `make`. You will need `gcc` installed.
