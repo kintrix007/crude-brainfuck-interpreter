@@ -44,12 +44,12 @@ int main(int argc, char *argv[]) {
 }
 
 void interpret() {
-	stackSize = 0;
 	stackIdx = -1;
+	stackSize = 0;
 	stack = NULL;
-	memSize = 1;
 	memIdx = 0;
-	mem = malloc(memSize);
+	memSize = 1;
+	mem = malloc(1);
 	mem[0] = 0;
 	long jCloseIdx = -1;
 
@@ -71,10 +71,11 @@ void interpret() {
 				if (jCloseIdx == -1) {
 					memIdx++;
 					if (memIdx >= memSize) {
-						long prevMemSize = memSize;
 						memSize *= 2;
 						mem = (unsigned char*)realloc(mem, memSize);
-						for (int i = prevMemSize; i < memSize; i++) {
+						// Division by two is probably more efficient
+						// than caching the previous value
+						for (int i = memSize/2; i < memSize; i++) {
 							mem[i] = 0;
 						}
 					}
@@ -167,8 +168,8 @@ inline void addAstElement(int elem) {
 }
 
 inline void buildAST(FILE *f) {
-	astSize = 0;
 	astIdx = -1;
+	astSize = 0;
 	ast = NULL;
 
 	char ch;
