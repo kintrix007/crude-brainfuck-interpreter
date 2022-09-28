@@ -139,12 +139,12 @@ void interpret() {
 				}
 				break;
 			case WRITE:
-				if (jCloseIdx == -1) putc(mem[memIdx], stdout);
+				if (jCloseIdx == -1) putc(mem[memIdx], stdout);	// Could use a syscall instead in assembly
 
 				astIdx++;
 				break;
 			case READ:
-				if (jCloseIdx == -1) mem[memIdx] = getc(stdin);
+				if (jCloseIdx == -1) mem[memIdx] = getc(stdin);	// Could use a syscall instead in assembly
 
 				astIdx++;
 				break;
@@ -152,54 +152,56 @@ void interpret() {
 	} while (astIdx < astSize);
 }
 
-inline void addAstElement(int elem) {
-	astIdx++;
-
-	if (astSize == 0) {
-		astSize = 1;
-		ast = (int*)malloc(astSize * sizeof(int));	
-		astIdx = 0;
-	} else if (astIdx >= astSize) {
-		astSize *= 2;
-		ast = (int*)realloc(ast, astSize * sizeof(int));
-	}
-
-	ast[astIdx] = elem;
-}
-
 inline void buildAST(FILE *f) {
 	astIdx = -1;
 	astSize = 0;
 	ast = NULL;
 
+	int astElem;
 	char ch;
 	do {
 		ch = getc(f);
 		switch (ch) {
 			case '+':
-				addAstElement(INC);
+				astElem = INC;
 				break;
 			case '-':
-				addAstElement(DEC);
+				astElem = DEC;
 				break;
 			case '>':
-				addAstElement(RIGHT);
+				astElem = RIGHT;
 				break;
 			case '<':
-				addAstElement(LEFT);
+				astElem = LEFT;
 				break;
 			case '[':
-				addAstElement(OPEN);
+				astElem = OPEN;
 				break;
 			case ']':
-				addAstElement(CLOSE);
+				astElem = CLOSE;
 				break;
                         case '.':
-                                addAstElement(WRITE);
+				astElem = WRITE;
                                 break;
                         case ',':
-                                addAstElement(READ);
+				astElem = READ;
                                 break;
+			default:
+				continue;
 		}
+
+		// Add AST element
+		astIdx++;
+
+		if (astSize == 0) {
+			astSize = 1;
+			ast = (int*)malloc(astSize * sizeof(int));	
+			astIdx = 0;
+		} else if (astIdx >= astSize) {
+			astSize *= 2;
+			ast = (int*)realloc(ast, astSize * sizeof(int));
+		}
+
+		ast[astIdx] = astElem;
 	} while (ch != EOF);
 }
