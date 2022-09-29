@@ -20,8 +20,7 @@ int *ast;
 long astSize;
 long astIdx;
 
-void buildAST(FILE *f);
-void addAstElement(int elem);
+void buildAST(FILE *f, int **ast);
 void interpret();
 
 int main(int argc, char *argv[]) {
@@ -37,7 +36,7 @@ int main(int argc, char *argv[]) {
 		exit(4);
 	}
 
-	buildAST(f);
+	buildAST(f, &ast);
 
 	astIdx = 0;
 	interpret();
@@ -152,10 +151,10 @@ void interpret() {
 	} while (astIdx < astSize);
 }
 
-inline void buildAST(FILE *f) {
+inline void buildAST(FILE *f, int **pAst) {
 	astIdx = -1;
 	astSize = 0;
-	ast = NULL;
+	*pAst = NULL;
 
 	int astElem;
 	char ch;
@@ -195,13 +194,13 @@ inline void buildAST(FILE *f) {
 
 		if (astSize == 0) {
 			astSize = 1;
-			ast = (int*)malloc(astSize * sizeof(int));	
+			*pAst = (int*)malloc(astSize * sizeof(int));	
 			astIdx = 0;
 		} else if (astIdx >= astSize) {
 			astSize *= 2;
-			ast = (int*)realloc(ast, astSize * sizeof(int));
+			*pAst = (int*)realloc(*pAst, astSize * sizeof(int));
 		}
 
-		ast[astIdx] = astElem;
+		(*pAst)[astIdx] = astElem;
 	} while (ch != EOF);
 }
